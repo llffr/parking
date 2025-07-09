@@ -1,0 +1,20 @@
+{
+  "name": "estacionamiento-smart",
+  "version": "1.0.0",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server-msSql.js",
+    "dev": "nodemon backend/server-msSql.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mssql": "^11.0.1",
+    "multer": "^2.0.1"
+  },
+  "packageManager": "pnpm@10.1.0+sha1.ab7948c89104fdd3fc88b5b391fa4b73fd800631",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

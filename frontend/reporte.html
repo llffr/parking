@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mapa de Estacionamiento</title>
+    <link rel="stylesheet" href="./css/reports.css">
+  </head>
+  <body>
+    <form id="formReporte" enctype="multipart/form-data">
+      <h1>Reportar un Error</h1>
+      <label>Nombre:</label><br>
+      <input type="text" name="nombre" required><br><br>
+
+      <label>DNI (opcional):</label><br>
+      <input type="text" name="dni"><br><br>
+
+      <label>Descripción del problema:</label><br>
+      <textarea name="descripcion" required></textarea><br><br>
+
+      <label>Captura de pantalla (opcional):</label><br>
+      <input type="file" name="captura"><br><br>
+
+      <button type="submit">Enviar reporte</button>
+    </form>
+
+    <div id="mensaje"></div>
+
+    <script>
+      document.getElementById('formReporte').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch('http://localhost:3000/reporte', {
+          method: 'POST',
+          body: formData
+        })
+          .then(res => res.text())
+          .then(msg => {
+            document.getElementById('mensaje').innerText = msg;
+            this.reset();
+          })
+          .catch(err => {
+            console.error(err);
+            document.getElementById('mensaje').innerText = '❌ Error al enviar el reporte';
+          });
+      });
+    </script>
+  </body>
+</html>

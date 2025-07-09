@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mapa de Estacionamiento</title>
+    <link rel="stylesheet" href="./css/style.css">
+  </head>
+  <body>
+    <h1>Mapa de Estacionamiento</h1>
+    <div id="mapa"></div>
+    <button onclick="mostrarHistorial()">📋 Ver Historial de Reservas</button>
+    <div id="historial" style="margin-top: 20px; display: none;">
+      <h2>Historial</h2>
+      <table border="1" cellpadding="8">
+        <thead>
+          <tr>
+            <th>DNI</th>
+            <th>Placa</th>
+            <th>Nombre</th>
+            <th>Tarjeta</th>
+            <th>Foto</th>
+            <th>Espacio</th>
+            <!-- <th>Estado</th> -->
+            <th>Entrada</th>
+            <th>Salida</th>
+          </tr>
+        </thead>
+        <tbody id="tablaHistorial"></tbody>
+      </table>
+    </div>
+
+    <a href="reporte.html">Reportar un problema</a>
+
+    <!-- Formulario de reserva -->
+    <div id="formulario">
+      <form id="formularioReserva" enctype="multipart/form-data">
+        <input type="hidden" name="codigo_espacio" id="codigoEspacioInput" />
+        <label>DNI:</label><br><input type="text" name="dni" required /><br>
+        <label>Placa:</label><br><input type="text" name="placa" required /><br>
+        <label>Nombre del conductor:</label><br><input type="text" name="nombre_conductor" required /><br>
+        <label>Tarjeta de propiedad:</label><br><input type="text" name="tarjeta_propiedad" required /><br>
+        <label>Foto (simulada):</label><br><input type="file" name="foto" /><br><br>
+        <button type="submit">Reservar</button>
+        <button type="button" onclick="cerrarFormulario()">Cancelar</button>
+      </form>
+    </div>
+
+    <script>
+      function obtenerEspacios() {
+        fetch('http://localhost:3000/espacios')
+          .then(res => res.json())
+          .then(data => generarMapa(data))
+          .catch(err => console.error(err));
+      }
+
+      function generarMapa(espacios) {
+        const mapa = document.getElementById('mapa');
+        let html = '<table><tr>';
+        espacios.forEach((espacio, i) => {
+          if (i > 0 && i % 5 === 0) html += '</tr><tr>';
+          html += `
+          <td class="${espacio.estado}">
+            <strong>${espacio.codigo}</strong><br>
+            Estado: ${espacio.estado}<br>
+
+            ${espacio.estado === 'libre' 
+                ? `<button onclick="abrirFormulario('${espacio.codigo}')">Reservar</button>` 
+                : `<button disabled style="opacity: 0.5; cursor: not-allowed;">Reservar</button>`}
+
+            ${espacio.estado === 'reservado' 
+                ? `<button onclick="marcarIngreso('${espacio.codigo}')">Ingreso</button>` 
+                : `<button disabled style="opacity: 0.5; cursor: not-allowed;">Ingreso</button>`}
+
+            ${espacio.estado === 'ocupado' 
+                ? `<button onclick="marcarSalida('${espacio.codigo}')">Salida</button>` 
+                : `<button disabled style="opacity: 0.5; cursor: not-allowed;">Salida</button>`}
+          </td>
+        `;
+        });
+        html += '</tr></table>';
+        mapa.innerHTML = html;
+      }
+
+      function abrirFormulario(codigo) {
+        document.getElementById('codigoEspacioInput').value = codigo;
+        document.getElementById('formulario').style.display = 'block';
+      }
+
+      function cerrarFormulario() {
+        document.getElementById('formulario').style.display = 'none';
+      }
+
+      document.getElementById('formularioReserva').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch('http://localhost:3000/reservar', {
+          method: 'POST',
+          body: formData
+        })
+          .then(res => res.text())
+          .then(msg => {
+            mostrarModal(msg);
+            cerrarFormulario();
+            obtenerEspacios();
+          })
+          .catch(err => console.error(err));
+      });
+
+      function marcarIngreso(codigo) {
+        fetch('http://localhost:3000/ingresar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ codigo_espacio: codigo })
+        })
+          .then(res => res.text())
+          .then(msg => {
+            mostrarModal(msg);
+            obtenerEspacios();
+            actualizarHistorial();
+          });
+      }
+
+      function marcarSalida(codigo) {
+        fetch('http://localhost:3000/salir', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ codigo_espacio: codigo })
+        })
+          .then(res => res.text())
+          .then(msg => {
+            mostrarModal(msg);
+            obtenerEspacios();
+            actualizarHistorial();
+          });
+      }
+
+      obtenerEspacios();
+
+      function mostrarModal(mensaje) {
+        document.getElementById('modal-message').innerText = mensaje;
+        document.getElementById('modal').style.display = 'flex';
+      }
+
+      function cerrarModal() {
+        document.getElementById('modal').style.display = 'none';
+      }
+
+      function actualizarHistorial() {
+        fetch('http://localhost:3000/historial')
+          .then(res => res.json())
+          .then(data => {
+            const historial = document.getElementById('tablaHistorial');
+            if (!historial) return;
+
+            let html = '';
+
+            data.forEach(r => {
+              html += `
+          <tr>
+            <td>${r.dni}</td>
+            <td>${r.placa}</td>
+            <td>${r.codigo_espacio}</td>
+            <td>${r.nombre_conductor}</td>
+            <td>${r.tarjeta_propiedad}</td>
+            <td>${r.foto ? `<img src="/uploads/${r.foto}" width="80">` : 'Sin foto'}</td>
+            <td>${r.hora_entrada ? new Date(r.hora_entrada).toLocaleString() : '-'}</td>
+            <td>${r.hora_salida ? new Date(r.hora_salida).toLocaleString() : '-'}</td>
+          </tr>
+        `;
+            });
+
+            historial.innerHTML = html;
+          })
+          .catch(err => {
+            console.error('❌ Error al actualizar historial:', err);
+            const historial = document.getElementById('tablaHistorial');
+            if (historial) {
+              historial.innerHTML = '<tr><td colspan="8">❌ No se pudo cargar el historial.</td></tr>';
+            }
+          });
+      }
+
+      function mostrarHistorial() {
+        const contenedor = document.getElementById('historial');
+        contenedor.style.display = contenedor.style.display === 'none' ? 'block' : 'none';
+
+        fetch('http://localhost:3000/historial')
+          .then(res => res.json())
+          .then(data => {
+            const tabla = document.getElementById('tablaHistorial');
+            tabla.innerHTML = '';
+
+            if (data.length === 0) {
+              tabla.innerHTML = '<tr><td colspan="9">No hay reservas registradas</td></tr>';
+            } else {
+              data.forEach(r => {
+                tabla.innerHTML += `
+              <tr>
+                <td>${r.dni}</td>
+                <td>${r.placa}</td>
+                <td>${r.nombre_conductor}</td>
+                <td>${r.tarjeta_propiedad}</td>
+                <td>${r.foto ? `<img src="http://localhost:3000/uploads/${r.foto}" width="80">` : 'Sin foto'}</td>
+                <td>${r.codigo_espacio}</td>
+                <!-- <td>${r.estado || 'N/A'}</td> -->
+                <td>${r.hora_entrada ? new Date(r.hora_entrada).toLocaleString() : '-'}</td>
+                <td>${r.hora_salida ? new Date(r.hora_salida).toLocaleString() : '-'}</td>
+              </tr>
+            `;
+              });
+            }
+          })
+          .catch(err => {
+            console.error('Error al cargar historial:', err);
+            alert('No se pudo obtener el historial.');
+          });
+      }
+    </script>
+
+    <!-- Modal personalizado -->
+    <div id="modal" style="display:none;">
+      <div id="modal-content">
+        <p id="modal-message"></p>
+        <button onclick="cerrarModal()">Cerrar</button>
+      </div>
+    </div>
+
+  </body>
+</html>
