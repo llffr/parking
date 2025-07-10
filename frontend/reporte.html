@@ -30,13 +30,14 @@
         e.preventDefault();
         const formData = new FormData(this);
 
-        fetch('http://localhost:3000/reporte', {
+        fetch('/reporte', {
           method: 'POST',
           body: formData
         })
           .then(res => res.text())
           .then(msg => {
             document.getElementById('mensaje').innerText = msg;
+            document.getElementById('formReporte').style.display = 'none';
             this.reset();
           })
           .catch(err => {

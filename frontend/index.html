@@ -9,6 +9,9 @@
     <h1>Mapa de Estacionamiento</h1>
     <div id="mapa"></div>
     <button onclick="mostrarHistorial()">📋 Ver Historial de Reservas</button>
+
+    <a href="reporte.html">Reportar un problema</a>
+
     <div id="historial" style="margin-top: 20px; display: none;">
       <h2>Historial</h2>
       <table border="1" cellpadding="8">
@@ -29,8 +32,6 @@
       </table>
     </div>
 
-    <a href="reporte.html">Reportar un problema</a>
-
     <!-- Formulario de reserva -->
     <div id="formulario">
       <form id="formularioReserva" enctype="multipart/form-data">
@@ -47,7 +48,7 @@
 
     <script>
       function obtenerEspacios() {
-        fetch('http://localhost:3000/espacios')
+        fetch('/espacios')
           .then(res => res.json())
           .then(data => generarMapa(data))
           .catch(err => console.error(err));
@@ -94,7 +95,7 @@
         e.preventDefault();
         const formData = new FormData(this);
 
-        fetch('http://localhost:3000/reservar', {
+        fetch('/reservar', {
           method: 'POST',
           body: formData
         })
@@ -108,7 +109,7 @@
       });
 
       function marcarIngreso(codigo) {
-        fetch('http://localhost:3000/ingresar', {
+        fetch('/ingresar', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ codigo_espacio: codigo })
@@ -122,7 +123,7 @@
       }
 
       function marcarSalida(codigo) {
-        fetch('http://localhost:3000/salir', {
+        fetch('/salir', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ codigo_espacio: codigo })
@@ -147,7 +148,7 @@
       }
 
       function actualizarHistorial() {
-        fetch('http://localhost:3000/historial')
+        fetch('/historial')
           .then(res => res.json())
           .then(data => {
             const historial = document.getElementById('tablaHistorial');
@@ -185,7 +186,7 @@
         const contenedor = document.getElementById('historial');
         contenedor.style.display = contenedor.style.display === 'none' ? 'block' : 'none';
 
-        fetch('http://localhost:3000/historial')
+        fetch('/historial')
           .then(res => res.json())
           .then(data => {
             const tabla = document.getElementById('tablaHistorial');
@@ -201,7 +202,7 @@
                 <td>${r.placa}</td>
                 <td>${r.nombre_conductor}</td>
                 <td>${r.tarjeta_propiedad}</td>
-                <td>${r.foto ? `<img src="http://localhost:3000/uploads/${r.foto}" width="80">` : 'Sin foto'}</td>
+                <td>${r.foto ? `<img src="/uploads/${r.foto}" width="80">` : 'Sin foto'}</td>
                 <td>${r.codigo_espacio}</td>
                 <!-- <td>${r.estado || 'N/A'}</td> -->
                 <td>${r.hora_entrada ? new Date(r.hora_entrada).toLocaleString() : '-'}</td>

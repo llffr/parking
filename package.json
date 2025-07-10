@@ -3,18 +3,19 @@
   "version": "1.0.0",
   "main": "backend/server.js",
   "scripts": {
-    "start": "node backend/server-msSql.js",
-    "dev": "nodemon backend/server-msSql.js"
+    "sqlite": "node backend/sqlite.js",
+    "json-db": "node backend/onlyJS.js",
+    "obj-js": "node backend/obj.js",
+    "mssql": "node backend/mssql.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "mssql": "^11.0.1",
     "multer": "^2.0.1"
   },
-  "packageManager": "pnpm@10.1.0+sha1.ab7948c89104fdd3fc88b5b391fa4b73fd800631",
   "devDependencies": {
     "nodemon": "^3.1.10"
-  }
+  },
+  "packageManager": "pnpm@10.11.1+sha512.e519b9f7639869dc8d5c3c5dfef73b3f091094b0a006d7317353c72b124e80e1afd429732e28705ad6bfa1ee879c1fce46c128ccebd3192101f43dd67c667912"
 }
