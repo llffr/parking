@@ -116,6 +116,13 @@ button:hover:not(:disabled) {
   cursor: pointer;
 }
 
+a {
+  text-align: center;
+  display: block;
+  margin-top: 50px;
+  color: #333;
+}
+
 @keyframes aparecer {
   from {
     transform: scale(0.8);
@@ -128,7 +135,7 @@ button:hover:not(:disabled) {
 }
 
 /* responsive */
-@media (max-width: 600px) {
+@media (max-width: 550px) {
   body {
     padding: 10px;
   }

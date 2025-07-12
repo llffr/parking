@@ -94,7 +94,7 @@ app.get('/espacios', (req, res) => {
 });
 
 app.get('/historial', (req, res) => {
-	db.all('SELECT * FROM reservas ORDER BY hora_entrada DESC, hora_salida DESC', [], (err, rows) => {
+	db.all('SELECT dni, placa, nombre_conductor, tarjeta_propiedad, codigo_espacio, hora_entrada, hora_salida FROM reservas ORDER BY hora_entrada DESC, hora_salida DESC', [], (err, rows) => {
 		if (err) return res.status(500).send('Error al obtener historial');
 		res.json(rows);
 	});
@@ -188,6 +188,7 @@ app.post('/reporte', reporteUpload.single('captura'), (req, res) => {
 app.use(express.static(path.join(__dirname, '../frontend')));
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, '../frontend/index.html')));
 app.get("/reporte", (req, res) => res.sendFile(path.join(__dirname, '../frontend/reporte.html')));
+app.get("/admin", (req, res) => res.sendFile(path.join(__dirname, '../frontend/admin.html')));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

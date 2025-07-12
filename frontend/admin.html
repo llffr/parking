@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin</title>
+    <style>
+	body {
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+		align-items: center;
+	}
+    </style>
+  </head>
+  <body>
+    <button onclick="mostrarHistorial()">📋 Ver Historial de Reservas</button>
+
+    <div id="historial" style="margin-top: 20px; display: none;">
+      <h2>Historial</h2>
+      <table border="1" cellpadding="8">
+        <thead>
+          <tr>
+            <th>DNI</th>
+            <th>Placa</th>
+            <th>Nombre</th>
+            <th>Tarjeta</th>
+            <!-- <th>Foto</th> -->
+            <th>Espacio</th>
+            <!-- <th>Estado</th> -->
+            <th>Entrada</th>
+            <th>Salida</th>
+          </tr>
+        </thead>
+        <tbody id="tablaHistorial"></tbody>
+      </table>
+    </div>
+
+    <script>
+      function mostrarHistorial() {
+        const contenedor = document.getElementById('historial');
+        contenedor.style.display = contenedor.style.display === 'none' ? 'block' : 'none';
+
+        fetch('/historial')
+          .then(res => res.json())
+          .then(data => {
+            const tabla = document.getElementById('tablaHistorial');
+            tabla.innerHTML = '';
+
+            if (data.length === 0) {
+              tabla.innerHTML = '<tr><td colspan="9">No hay reservas registradas</td></tr>';
+            } else {
+              data.forEach(r => {
+                tabla.innerHTML += `
+              <tr>
+                <td>${r.dni}</td>
+                <td>${r.placa}</td>
+                <td>${r.nombre_conductor}</td>
+                <td>${r.tarjeta_propiedad}</td>
+                <!-- <td>${r.foto ? `<img src="/uploads/${r.foto}" width="80">` : 'Sin foto'}</td> -->
+                <td>${r.codigo_espacio}</td>
+                <!-- <td>${r.estado || 'N/A'}</td> -->
+                <td>${r.hora_entrada ? new Date(r.hora_entrada).toLocaleString() : '-'}</td>
+                <td>${r.hora_salida ? new Date(r.hora_salida).toLocaleString() : '-'}</td>
+              </tr>
+            `;
+              });
+            }
+          })
+          .catch(err => {
+            console.error('Error al cargar historial:', err);
+            alert('No se pudo obtener el historial.');
+          });
+      }
+
+      function actualizarHistorial() {
+        fetch('/historial')
+          .then(res => res.json())
+          .then(data => {
+            const historial = document.getElementById('tablaHistorial');
+            if (!historial) return;
+
+            let html = '';
+
+            data.forEach(r => {
+              html += `
+          <tr>
+            <td>${r.dni}</td>
+            <td>${r.placa}</td>
+            <td>${r.codigo_espacio}</td>
+            <td>${r.nombre_conductor}</td>
+            <td>${r.tarjeta_propiedad}</td>
+            <!-- <td>${r.foto ? `<img src="/uploads/${r.foto}" width="80">` : 'Sin foto'}</td> -->
+            <td>${r.hora_entrada ? new Date(r.hora_entrada).toLocaleString() : '-'}</td>
+            <td>${r.hora_salida ? new Date(r.hora_salida).toLocaleString() : '-'}</td>
+          </tr>
+        `;
+            });
+
+            historial.innerHTML = html;
+          })
+          .catch(err => {
+            console.error('❌ Error al actualizar historial:', err);
+            const historial = document.getElementById('tablaHistorial');
+            if (historial) {
+              historial.innerHTML = '<tr><td colspan="8">❌ No se pudo cargar el historial.</td></tr>';
+            }
+          });
+      }
+    </script>
+  </body>
+</html>

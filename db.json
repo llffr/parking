@@ -1,0 +1,68 @@
+{
+  "espacios": [
+    {
+      "id": 1,
+      "codigo": "A1",
+      "estado": "libre"
+    },
+    {
+      "id": 2,
+      "codigo": "A2",
+      "estado": "libre"
+    },
+    {
+      "id": 3,
+      "codigo": "A3",
+      "estado": "reservado"
+    },
+    {
+      "id": 4,
+      "codigo": "A4",
+      "estado": "libre"
+    },
+    {
+      "id": 5,
+      "codigo": "A5",
+      "estado": "libre"
+    },
+    {
+      "id": 6,
+      "codigo": "B1",
+      "estado": "libre"
+    },
+    {
+      "id": 7,
+      "codigo": "B2",
+      "estado": "libre"
+    },
+    {
+      "id": 8,
+      "codigo": "B3",
+      "estado": "libre"
+    },
+    {
+      "id": 9,
+      "codigo": "B4",
+      "estado": "libre"
+    },
+    {
+      "id": 10,
+      "codigo": "B5",
+      "estado": "libre"
+    }
+  ],
+  "reservas": [
+    {
+      "id": 1752348492288,
+      "dni": "deimi",
+      "placa": "idneidin",
+      "codigo_espacio": "A3",
+      "nombre_conductor": "inideni",
+      "tarjeta_propiedad": "denin",
+      "foto": null,
+      "hora_entrada": null,
+      "hora_salida": null
+    }
+  ],
+  "reportes": []
+}
