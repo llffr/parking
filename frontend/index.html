@@ -120,11 +120,22 @@
       function mostrarModal(mensaje) {
         document.getElementById('modal-message').innerText = mensaje;
         document.getElementById('modal').style.display = 'flex';
+	      setTimeout(() => {
+		      cerrarModal();
+	      }, 800);
       }
 
       function cerrarModal() {
         document.getElementById('modal').style.display = 'none';
       }
+
+      // refresh table. form not visible
+      setInterval(() => {
+	      const formulario = document.getElementById('formulario');
+	      if (formulario.style.display !== 'block') {
+		      obtenerEspacios();
+	      }
+      }, 5000);
 
     </script>
 
@@ -132,7 +143,7 @@
     <div id="modal" style="display:none;">
       <div id="modal-content">
         <p id="modal-message"></p>
-        <button onclick="cerrarModal()">Cerrar</button>
+        <!-- <button onclick="cerrarModal()">Cerrar</button> -->
       </div>
     </div>
 

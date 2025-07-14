@@ -70,11 +70,25 @@ const espacios = [
 	["A3", "libre"],
 	["A4", "libre"],
 	["A5", "libre"],
+	["A6", "libre"],
+	["A7", "libre"],
+	["A8", "libre"],
+	["A9", "libre"],
+	["A10", "libre"],
+	["A11", "libre"],
+	["A12", "libre"],
 	["B1", "libre"],
 	["B2", "libre"],
 	["B3", "libre"],
 	["B4", "libre"],
-	["B5", "libre"]
+	["B5", "libre"],
+	["B6", "libre"],
+	["B7", "libre"],
+	["B8", "libre"],
+	["B9", "libre"],
+	["B10", "libre"],
+	["B11", "libre"],
+	["B12", "libre"],
 ];
 
 espacios.forEach(([codigo, estado]) => {
